@@ -21,11 +21,13 @@
 
 char *modetbl[] = { "500K FM", "300K FM", "250K FM", "500K MFM", "300K MFM", "250K MFM" };
 
-main(){
+int
+main(void){
 	unsigned char sectbl[32];
 	unsigned char sectyp[32];
 	unsigned char secdata[32][8192];
-	unsigned int mode, cyl, hd, seccnt, secsiz;
+	unsigned int mode, cyl, hd, seccnt;
+	unsigned int secsiz = 0;
 	int i, j;
 	unsigned char c, value;
 
@@ -85,6 +87,13 @@ main(){
 	  case 6:
 	   secsiz = 8192;
 	   break;
+	 default:
+		 fprintf (stderr, "Unknown secsiz %d\n", c);
+		 break;
+	 }
+	 if (secsiz == 0)
+	 {
+		 return (1);
 	 }
 
 	 // fprintf(stderr,"Cyl:%d Hd:%d %s %d sectors size %d\n", cyl, hd, modetbl[mode], seccnt, secsiz);
@@ -147,5 +156,7 @@ main(){
 	  fprintf(stderr," %-2d",sectbl[i]);
 	 }
 	 fprintf(stderr,"\n");
-	} 
+	}
+
+	return (0);
 }

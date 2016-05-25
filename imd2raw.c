@@ -21,6 +21,13 @@
 
 char *modetbl[] = { "500K FM", "300K FM", "250K FM", "500K MFM", "300K MFM", "250K MFM" };
 
+static void
+leave (int reason)
+{
+	fflush (stdout);
+	exit (reason);
+} /* leave */
+
 int
 main(void){
 	unsigned char sectbl[32];
@@ -34,7 +41,7 @@ main(void){
 
 	if( (getchar() != 'I') || (getchar() != 'M') || (getchar() != 'D') ){
 	  fprintf(stderr,"File doesn't start with 'IMD'\n");
-	  exit(EXIT_FAILURE);
+	  leave(EXIT_FAILURE);
 	}	
 
 	while(1){
@@ -49,17 +56,17 @@ main(void){
 	 mode   = c;
 	 if(mode > 6){
 	  fprintf(stderr,"Stream out of sync at mode, got 0x%x\n", mode);
-	  exit(EXIT_FAILURE);
+	  leave(EXIT_FAILURE);
 	 }
 	 cyl    = getchar();
 	 if(cyl > 80){
 	  fprintf(stderr,"Stream out of sync at cyl, got 0x%x\n", cyl);
-	  exit(EXIT_FAILURE);
+	  leave(EXIT_FAILURE);
 	 }
 	 hd     = getchar();
 	 if(hd > 1){
 	  fprintf(stderr,"Stream out of sync at hd, got %d\n", hd);
-	  exit(EXIT_FAILURE);
+	  leave(EXIT_FAILURE);
 	 }
 	 seccnt = getchar();
 
@@ -89,11 +96,7 @@ main(void){
 	   break;
 	 default:
 		 fprintf (stderr, "Unknown secsiz %d\n", c);
-		 break;
-	 }
-	 if (secsiz == 0)
-	 {
-		 return (1);
+		 leave(EXIT_FAILURE);
 	 }
 
 	 // fprintf(stderr,"Cyl:%d Hd:%d %s %d sectors size %d\n", cyl, hd, modetbl[mode], seccnt, secsiz);
